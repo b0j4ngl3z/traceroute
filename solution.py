@@ -71,10 +71,11 @@ def build_packet(ID):
 
 def get_route(hostname):
     timeLeft = TIMEOUT
-    tracelist1 = [] #This is your list to use when iterating through each trace 
+
     tracelist2 = [] #This is your list to contain all traces
 
     for ttl in range(1,MAX_HOPS):
+        tracelist1 = []  # This is your list to use when iterating through each trace
         for tries in range(TRIES):
             destAddr = gethostbyname(hostname)
 
@@ -111,7 +112,6 @@ def get_route(hostname):
                 timeReceived = time.time()
                 timeLeft = timeLeft - howLongInSelect
                 if timeLeft <= 0:
-                    tracelist1.append("* * * Request timed out.")
                     #Fill in start
                     tracelist1.append(str(ttl))
                     tracelist1.append("0 ")
@@ -196,5 +196,11 @@ def get_route(hostname):
             finally:
                 mySocket.close()
 
+    return tracelist2
+
 if __name__ == '__main__':
-    get_route("google.co.il")
+    dest = "google.com"
+    traces = get_route(dest)
+    print("traceroute to " + str(dest))
+    for i in range(len(traces)):
+        print(traces[i][0] + "\t" + traces[i][1] + "ms" + "\t" + traces[i][2] + "\t" + traces[i][3])
